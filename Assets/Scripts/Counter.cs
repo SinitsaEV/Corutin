@@ -7,8 +7,15 @@ public class Counter : MonoBehaviour
     private float _delay = 0.5f;
     private int _count = 0;
     private bool _isActive = false;
+    private Coroutine _coroutine;
+    private WaitForSeconds _time;
 
     public Action<int> ChangedCount;
+
+    private void Start()
+    {
+        _time = new WaitForSeconds(_delay);
+    }
 
     private void Update()
     {
@@ -18,11 +25,11 @@ public class Counter : MonoBehaviour
 
             if (_isActive)
             {
-                StartCoroutine(Change());
+                _coroutine = StartCoroutine(Change());
             }
             else
             {
-                StopAllCoroutines();
+                StopCoroutine(_coroutine);
             }
         }        
     }
@@ -31,9 +38,7 @@ public class Counter : MonoBehaviour
     {
         while (_count < int.MaxValue)
         {
-            WaitForSeconds time = new WaitForSeconds(_delay);
-
-            yield return time;
+            yield return _time;
 
             _count++;
             ChangedCount?.Invoke(_count);
